@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { Copy, Download, ExternalLink, Image, Link2, Trash2, Type } from "lucide-react";
+import { Copy, Download, ExternalLink, FileArchive, Image, Link2, Trash2, Type } from "lucide-react";
 import type { ClipboardItem } from "../types";
 import { resolveAssetUrl } from "../utils/assets";
 import { formatBytes, formatDate, formatTime } from "../utils/format";
@@ -30,11 +30,16 @@ export default function ClipboardItemCard({ item, onDelete }: ClipboardItemCardP
       label: "图片",
       icon: Image,
       className: "bg-emerald-300/12 text-emerald-100"
+    },
+    file: {
+      label: "文件",
+      icon: FileArchive,
+      className: "bg-amber-300/12 text-amber-100"
     }
   }[item.type];
 
   const Icon = typeMeta.icon;
-  const imageUrl = resolveAssetUrl(item.imageUrl);
+  const assetUrl = resolveAssetUrl(item.fileUrl || item.imageUrl);
 
   return (
     <article className="group overflow-hidden rounded-[26px] border border-white/10 bg-white/[0.065] p-4 shadow-panel backdrop-blur-2xl transition hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.09]">
@@ -64,9 +69,9 @@ export default function ClipboardItemCard({ item, onDelete }: ClipboardItemCardP
 
       {item.type === "image" ? (
         <div className="mt-4">
-          <a href={imageUrl} target="_blank" rel="noreferrer">
+          <a href={assetUrl} target="_blank" rel="noreferrer">
             <img
-              src={imageUrl}
+              src={assetUrl}
               alt={item.fileName || "Uploaded image"}
               className="max-h-[420px] w-full rounded-3xl border border-white/10 object-cover"
               loading="lazy"
@@ -78,9 +83,34 @@ export default function ClipboardItemCard({ item, onDelete }: ClipboardItemCardP
               <div>{formatBytes(item.fileSize)}</div>
             </div>
             <a
-              href={imageUrl}
+              href={assetUrl}
               download={item.fileName}
               className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/[0.1]"
+            >
+              <Download className="h-4 w-4" />
+              下载
+            </a>
+          </div>
+        </div>
+      ) : item.type === "file" ? (
+        <div className="mt-4 rounded-3xl border border-white/10 bg-black/15 p-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-amber-300/12 text-amber-100">
+                <FileArchive className="h-6 w-6" />
+              </div>
+              <div className="min-w-0">
+                <div className="truncate font-semibold text-slate-100">{item.fileName || item.content}</div>
+                <div className="mt-1 text-sm text-slate-400">
+                  {formatBytes(item.fileSize)}
+                  {item.mimeType ? ` · ${item.mimeType}` : ""}
+                </div>
+              </div>
+            </div>
+            <a
+              href={assetUrl}
+              download={item.fileName}
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white/[0.08] px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/[0.12]"
             >
               <Download className="h-4 w-4" />
               下载

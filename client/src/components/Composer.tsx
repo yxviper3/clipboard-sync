@@ -1,5 +1,5 @@
 import { ChangeEvent, ClipboardEvent, DragEvent, KeyboardEvent, useRef, useState } from "react";
-import { ImagePlus, Loader2, Send, Sparkles, UploadCloud } from "lucide-react";
+import { Loader2, Paperclip, Send, Sparkles, UploadCloud } from "lucide-react";
 import GlassPanel from "./GlassPanel";
 
 interface ComposerProps {
@@ -19,9 +19,9 @@ export default function Composer({ uploading, onSend, onUpload }: ComposerProps)
   };
 
   const uploadFiles = async (files: FileList | File[]) => {
-    const image = Array.from(files).find((file) => file.type.startsWith("image/"));
-    if (image) {
-      await onUpload(image);
+    const file = Array.from(files)[0];
+    if (file) {
+      await onUpload(file);
     }
   };
 
@@ -41,10 +41,10 @@ export default function Composer({ uploading, onSend, onUpload }: ComposerProps)
   };
 
   const handlePaste = async (event: ClipboardEvent<HTMLTextAreaElement>) => {
-    const image = Array.from(event.clipboardData.files).find((file) => file.type.startsWith("image/"));
-    if (image) {
+    const file = Array.from(event.clipboardData.files)[0];
+    if (file) {
       event.preventDefault();
-      await onUpload(image);
+      await onUpload(file);
     }
   };
 
@@ -63,7 +63,7 @@ export default function Composer({ uploading, onSend, onUpload }: ComposerProps)
         </div>
         <div>
           <h2 className="text-lg font-semibold text-white">发送到所有设备</h2>
-          <p className="text-sm text-slate-400">Ctrl + Enter 发送，输入区可直接粘贴图片</p>
+          <p className="text-sm text-slate-400">Ctrl + Enter 发送，支持粘贴图片和上传 100MB 内文件</p>
         </div>
       </div>
 
@@ -92,7 +92,6 @@ export default function Composer({ uploading, onSend, onUpload }: ComposerProps)
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif"
           className="hidden"
           onChange={handleFileChange}
         />
@@ -102,7 +101,7 @@ export default function Composer({ uploading, onSend, onUpload }: ComposerProps)
           className="flex w-full items-center justify-center gap-3 rounded-2xl px-4 py-4 text-slate-200 transition hover:bg-white/[0.06]"
         >
           {uploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <UploadCloud className="h-5 w-5" />}
-          <span>{uploading ? "图片上传中..." : "拖拽图片到这里，或点击选择图片"}</span>
+          <span>{uploading ? "文件上传中..." : "拖拽文件到这里，或点击选择文件"}</span>
         </button>
       </div>
 
@@ -120,8 +119,8 @@ export default function Composer({ uploading, onSend, onUpload }: ComposerProps)
           onClick={() => fileInputRef.current?.click()}
           className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-3 font-semibold text-white transition hover:bg-white/[0.1]"
         >
-          <ImagePlus className="h-4 w-4" />
-          上传图片
+          <Paperclip className="h-4 w-4" />
+          上传文件
         </button>
       </div>
     </GlassPanel>

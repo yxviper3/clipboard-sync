@@ -88,20 +88,15 @@ export function useClipboardRoom(roomCode: string) {
     });
   }, []);
 
-  const uploadImage = useCallback(
+  const uploadFile = useCallback(
     async (file: File) => {
-      if (!file.type.startsWith("image/")) {
-        toast.error("只能上传图片文件");
-        return false;
-      }
-
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("图片不能超过 5MB");
+      if (file.size > 100 * 1024 * 1024) {
+        toast.error("文件不能超过 100MB");
         return false;
       }
 
       const formData = new FormData();
-      formData.append("image", file);
+      formData.append("file", file);
       setUploading(true);
 
       try {
@@ -112,13 +107,13 @@ export function useClipboardRoom(roomCode: string) {
 
         const result = await response.json();
         if (!response.ok) {
-          throw new Error(result.message || "图片上传失败");
+          throw new Error(result.message || "文件上传失败");
         }
 
-        toast.success("图片已同步");
+        toast.success(file.type.startsWith("image/") ? "图片已同步" : "文件已同步");
         return true;
       } catch (error) {
-        toast.error(error instanceof Error ? error.message : "图片上传失败");
+        toast.error(error instanceof Error ? error.message : "文件上传失败");
         return false;
       } finally {
         setUploading(false);
@@ -164,10 +159,10 @@ export function useClipboardRoom(roomCode: string) {
       loading,
       uploading,
       sendText,
-      uploadImage,
+      uploadFile,
       deleteItem,
       clearItems
     }),
-    [items, onlineDevices, connected, loading, uploading, sendText, uploadImage, deleteItem, clearItems]
+    [items, onlineDevices, connected, loading, uploading, sendText, uploadFile, deleteItem, clearItems]
   );
 }

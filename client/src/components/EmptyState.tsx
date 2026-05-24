@@ -9,7 +9,7 @@ export default function EmptyState() {
         </div>
         <h3 className="mt-5 text-xl font-semibold text-white">还没有同步内容</h3>
         <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-400">
-          在任意设备发送文本、链接或图片，它会立即出现在这里。
+          在任意设备发送文本、链接、图片或文件，它会立即出现在这里。
         </p>
       </div>
     </div>

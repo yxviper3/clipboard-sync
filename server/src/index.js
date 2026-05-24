@@ -16,14 +16,8 @@ const __dirname = path.dirname(__filename);
 
 const PORT = Number(process.env.PORT || 4000);
 const HOST = process.env.HOST || "0.0.0.0";
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const MAX_FILE_SIZE = 100 * 1024 * 1024;
 const ROOM_PATTERN = /^\d{4}$/;
-const ALLOWED_IMAGE_TYPES = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/gif"
-]);
 
 const app = express();
 const server = http.createServer(app);
@@ -64,14 +58,7 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   limits: {
-    fileSize: MAX_IMAGE_SIZE
-  },
-  fileFilter: (_request, file, callback) => {
-    if (!ALLOWED_IMAGE_TYPES.has(file.mimetype)) {
-      callback(new Error("Only jpg, png, webp and gif images are allowed."));
-      return;
-    }
-    callback(null, true);
+    fileSize: MAX_FILE_SIZE
   }
 });
 
@@ -154,7 +141,7 @@ app.get("/api/rooms/:roomId/items", (request, response) => {
   response.json({ items: getRoomItems(roomId) });
 });
 
-app.post("/api/rooms/:roomId/upload", upload.single("image"), async (request, response) => {
+app.post("/api/rooms/:roomId/upload", upload.single("file"), async (request, response) => {
   const { roomId } = request.params;
   if (!isRoomId(roomId)) {
     response.status(400).json({ message: "Room code must be a 4-digit number." });
@@ -162,18 +149,22 @@ app.post("/api/rooms/:roomId/upload", upload.single("image"), async (request, re
   }
 
   if (!request.file) {
-    response.status(400).json({ message: "No image file uploaded." });
+    response.status(400).json({ message: "No file uploaded." });
     return;
   }
 
+  const isImage = request.file.mimetype.startsWith("image/");
+  const fileUrl = getFileUrl(request.file.filename);
   const item = {
     id: crypto.randomUUID(),
     roomId,
-    type: "image",
-    content: request.file.originalname || "image",
-    imageUrl: getFileUrl(request.file.filename),
+    type: isImage ? "image" : "file",
+    content: request.file.originalname || "file",
+    fileUrl,
+    imageUrl: isImage ? fileUrl : undefined,
     fileName: request.file.originalname || request.file.filename,
     fileSize: request.file.size,
+    mimeType: request.file.mimetype,
     createdAt: new Date().toISOString()
   };
 
@@ -273,7 +264,7 @@ io.on("connection", (socket) => {
 
 app.use((error, _request, response, _next) => {
   if (error instanceof multer.MulterError && error.code === "LIMIT_FILE_SIZE") {
-    response.status(413).json({ message: "Image must be 5MB or smaller." });
+    response.status(413).json({ message: "File must be 100MB or smaller." });
     return;
   }
 

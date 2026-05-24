@@ -54,7 +54,7 @@
       ]
     },
     "portable": {
-      "artifactName": "Clipboard-Sync-${version}.exe"
+      "artifactName": "copy.exe"
     }
   }
 }

@@ -1,4 +1,4 @@
-import { ImagePlus, LogOut, Trash2 } from "lucide-react";
+import { LogOut, Paperclip, Trash2 } from "lucide-react";
 
 interface MobileActionBarProps {
   onUploadClick: () => void;
@@ -14,9 +14,9 @@ export default function MobileActionBar({ onUploadClick, onClear, onDisconnect }
           type="button"
           onClick={onUploadClick}
           className="grid place-items-center rounded-2xl bg-white/[0.08] px-3 py-3 text-sm font-semibold text-white"
-          aria-label="上传图片"
+          aria-label="上传文件"
         >
-          <ImagePlus className="h-5 w-5" />
+          <Paperclip className="h-5 w-5" />
         </button>
         <button
           type="button"

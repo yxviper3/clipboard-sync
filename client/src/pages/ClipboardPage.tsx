@@ -24,7 +24,7 @@ export default function ClipboardPage({ roomCode, onDisconnect }: ClipboardPageP
     loading,
     uploading,
     sendText,
-    uploadImage,
+    uploadFile,
     deleteItem,
     clearItems
   } = useClipboardRoom(roomCode);
@@ -50,11 +50,10 @@ export default function ClipboardPage({ roomCode, onDisconnect }: ClipboardPageP
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp,image/gif"
         className="hidden"
         onChange={(event) => {
           const file = event.target.files?.[0];
-          if (file) void uploadImage(file);
+          if (file) void uploadFile(file);
           event.target.value = "";
         }}
       />
@@ -95,7 +94,7 @@ export default function ClipboardPage({ roomCode, onDisconnect }: ClipboardPageP
 
         <div className="grid gap-5 lg:grid-cols-[390px_minmax(0,1fr)]">
           <div className="space-y-5 lg:sticky lg:top-5 lg:self-start">
-            <Composer uploading={uploading} onSend={sendText} onUpload={uploadImage} />
+            <Composer uploading={uploading} onSend={sendText} onUpload={uploadFile} />
             <GlassPanel className="hidden p-5 lg:block">
               <div className="flex items-center gap-3">
                 <div className="grid h-10 w-10 place-items-center rounded-2xl bg-violet-300/12 text-violet-100">

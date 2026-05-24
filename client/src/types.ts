@@ -1,13 +1,15 @@
-export type ClipboardItemType = "text" | "link" | "image";
+export type ClipboardItemType = "text" | "link" | "image" | "file";
 
 export interface ClipboardItem {
   id: string;
   roomId: string;
   type: ClipboardItemType;
   content: string;
+  fileUrl?: string;
   imageUrl?: string;
   fileName?: string;
   fileSize?: number;
+  mimeType?: string;
   createdAt: string;
 }
 
