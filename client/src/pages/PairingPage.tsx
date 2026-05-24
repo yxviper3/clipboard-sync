@@ -59,15 +59,15 @@ export default function PairingPage({ onConnect }: PairingPageProps) {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(45,212,191,0.18),transparent_32%),radial-gradient(circle_at_80%_5%,rgba(168,85,247,0.2),transparent_34%),linear-gradient(135deg,#070812_0%,#0d1020_48%,#111827_100%)]" />
       <div className="pointer-events-none absolute left-1/2 top-24 h-72 w-72 -translate-x-1/2 rounded-full bg-cyan-300/12 blur-3xl" />
 
-      <div className="absolute left-4 right-4 top-4 z-10 lg:left-10 lg:right-auto lg:w-[680px]">
-        <div className="rounded-2xl border border-amber-200/15 bg-amber-200/[0.055] px-4 py-3 text-xs leading-5 text-slate-300 shadow-panel backdrop-blur-2xl sm:text-sm sm:leading-6">
-          <div className="flex items-start gap-3">
-            <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-amber-100 sm:h-5 sm:w-5" />
+      <div className="absolute left-4 right-4 top-4 z-10 sm:right-auto sm:w-[520px] lg:left-10 lg:w-[540px]">
+        <div className="rounded-2xl border border-amber-200/15 bg-amber-200/[0.055] px-4 py-3 text-xs leading-5 text-slate-300 shadow-panel backdrop-blur-2xl">
+          <div className="flex items-start gap-2.5">
+            <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-amber-100" />
             <div>
               <p>
-                请勿使用本工具传输违法、侵权、涉密或有害内容。使用本工具产生的任何后果由使用者自行承担，作者不承担相关责任。
+                请勿传输违法、侵权、涉密或有害内容，使用后果由使用者自行承担。
               </p>
-              <p className="font-semibold text-cyan-100">VX：Yxviper，可帮做软件</p>
+              <p className="font-semibold text-cyan-100">商务合作+V：Yxviper</p>
             </div>
           </div>
         </div>
