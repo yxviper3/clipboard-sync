@@ -4,6 +4,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import { Cable, Dice5, Radar, ShieldCheck, Smartphone, Wifi } from "lucide-react";
 import toast from "react-hot-toast";
 import GlassPanel from "../components/GlassPanel";
+import PwaInstallCard from "../components/PwaInstallCard";
 import { API_URL } from "../utils/config";
 import { isValidRoomCode, randomRoomCode } from "../utils/room";
 
@@ -176,6 +177,8 @@ export default function PairingPage({ onConnect }: PairingPageProps) {
                     </p>
                   )}
                 </div>
+
+                <PwaInstallCard />
               </div>
             </GlassPanel>
           </motion.div>

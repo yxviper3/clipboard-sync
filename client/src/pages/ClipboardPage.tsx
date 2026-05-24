@@ -7,6 +7,7 @@ import Composer from "../components/Composer";
 import EmptyState from "../components/EmptyState";
 import GlassPanel from "../components/GlassPanel";
 import MobileActionBar from "../components/MobileActionBar";
+import PwaInstallCard from "../components/PwaInstallCard";
 import StatusPill from "../components/StatusPill";
 import { useClipboardRoom } from "../hooks/useClipboardRoom";
 
@@ -95,6 +96,7 @@ export default function ClipboardPage({ roomCode, onDisconnect }: ClipboardPageP
         <div className="grid gap-5 lg:grid-cols-[390px_minmax(0,1fr)]">
           <div className="space-y-5 lg:sticky lg:top-5 lg:self-start">
             <Composer uploading={uploading} onSend={sendText} onUpload={uploadFile} />
+            <PwaInstallCard />
             <GlassPanel className="hidden p-5 lg:block">
               <div className="flex items-center gap-3">
                 <div className="grid h-10 w-10 place-items-center rounded-2xl bg-violet-300/12 text-violet-100">
