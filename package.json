@@ -1,0 +1,60 @@
+{
+  "name": "clipboard-sync",
+  "version": "0.1.0",
+  "private": true,
+  "main": "electron/main.cjs",
+  "description": "Modern cross-device clipboard sync MVP with React, Express, Socket.IO and local storage.",
+  "scripts": {
+    "install:all": "npm install --prefix server && npm install --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "build:client": "npm run build --prefix client",
+    "desktop:dev": "npm run build:client && electron .",
+    "dist:win": "npm run build:client && electron-builder --win portable"
+  },
+  "keywords": [
+    "clipboard",
+    "sync",
+    "socket.io",
+    "react",
+    "vite"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "multer": "^2.0.2",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.clipboardsync.local",
+    "productName": "Clipboard Sync",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "electron/**/*",
+      "server/src/**/*",
+      "server/package.json",
+      "client/dist/**/*",
+      "build/icon.png",
+      "build/icon.ico",
+      "package.json"
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "signAndEditExecutable": false,
+      "target": [
+        "portable"
+      ]
+    },
+    "portable": {
+      "artifactName": "Clipboard-Sync-${version}.exe"
+    }
+  }
+}

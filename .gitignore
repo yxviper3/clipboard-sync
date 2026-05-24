@@ -1,0 +1,12 @@
+node_modules/
+dist/
+release/
+.env
+.env.local
+server/uploads/*
+!server/uploads/.gitkeep
+server/data/*.json
+build/extracted-exe-icon.png
+npm-debug.log*
+*.log
+.DS_Store
