@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { QRCodeCanvas } from "qrcode.react";
-import { Cable, Dice5, Radar, ShieldCheck, Smartphone, Wifi } from "lucide-react";
+import { Cable, Dice5, Radar, ShieldAlert, ShieldCheck, Smartphone, Wifi } from "lucide-react";
 import toast from "react-hot-toast";
 import GlassPanel from "../components/GlassPanel";
 import PwaInstallCard from "../components/PwaInstallCard";
@@ -116,6 +116,20 @@ export default function PairingPage({ onConnect }: PairingPageProps) {
                   <p className="mt-2 text-sm leading-6 text-slate-400">
                     在另一台设备输入相同 4 位代码即可同步。
                   </p>
+                </div>
+
+                <div className="mt-5 rounded-3xl border border-amber-200/15 bg-amber-200/[0.06] p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-amber-200/12 text-amber-100">
+                      <ShieldAlert className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0 text-sm leading-6 text-slate-300">
+                      <p>
+                        请勿使用本工具传输违法、侵权、涉密或有害内容。使用本工具产生的任何后果由使用者自行承担，作者不承担相关责任。
+                      </p>
+                      <p className="mt-1 font-semibold text-cyan-100">VX：Yxviper，可帮做软件</p>
+                    </div>
+                  </div>
                 </div>
 
                 <form onSubmit={submit} className="mt-7">
