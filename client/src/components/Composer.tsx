@@ -1,5 +1,5 @@
 import { ChangeEvent, ClipboardEvent, DragEvent, KeyboardEvent, useRef, useState } from "react";
-import { Loader2, Paperclip, Send, Sparkles, UploadCloud } from "lucide-react";
+import { Loader2, Send, Sparkles, UploadCloud } from "lucide-react";
 import GlassPanel from "./GlassPanel";
 import { formatBytes } from "../utils/format";
 
@@ -134,7 +134,7 @@ export default function Composer({
         <UploadProgress file={selectedFile} uploadProgress={uploadProgress} className="mt-3 lg:hidden" />
       )}
 
-      <div className="mt-5 grid gap-2.5 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-3">
+      <div className="mt-5">
         <button
           type="button"
           onClick={() => void submit()}
@@ -150,15 +150,6 @@ export default function Composer({
         >
           {sending ? <Loader2 className="h-5 w-5 animate-spin lg:h-4 lg:w-4" /> : <Send className="h-5 w-5 lg:h-4 lg:w-4" />}
           {sending ? "发送中..." : onlineDevices <= 1 ? "发送内容" : "发送到设备"}
-        </button>
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={uploading}
-          className="mx-auto inline-flex h-9 min-w-32 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.035] px-4 text-xs font-semibold text-slate-400 transition hover:-translate-y-0.5 hover:bg-white/[0.09] hover:text-slate-100 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 lg:mx-0 lg:h-12 lg:min-w-0 lg:rounded-2xl lg:px-5 lg:text-base lg:text-white"
-        >
-          <Paperclip className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
-          上传文件
         </button>
       </div>
     </GlassPanel>
