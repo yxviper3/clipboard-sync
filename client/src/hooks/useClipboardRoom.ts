@@ -11,6 +11,7 @@ export function useClipboardRoom(roomCode: string) {
   const [connected, setConnected] = useState(false);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   useEffect(() => {
     const socket = io(API_URL, {
@@ -82,7 +83,7 @@ export function useClipboardRoom(roomCode: string) {
           return;
         }
 
-        toast.success(ack.item?.type === "link" ? "链接已同步" : "文本已同步");
+        toast.success("已发送到所有在线设备");
         resolve(true);
       });
     });
@@ -98,17 +99,39 @@ export function useClipboardRoom(roomCode: string) {
       const formData = new FormData();
       formData.append("file", file);
       setUploading(true);
+      setUploadProgress(0);
 
       try {
-        const response = await fetch(`${API_URL}/api/rooms/${roomCode}/upload`, {
-          method: "POST",
-          body: formData
-        });
+        await new Promise<void>((resolve, reject) => {
+          const request = new XMLHttpRequest();
+          request.open("POST", `${API_URL}/api/rooms/${roomCode}/upload`);
 
-        const result = await response.json();
-        if (!response.ok) {
-          throw new Error(result.message || "文件上传失败");
-        }
+          request.upload.onprogress = (event) => {
+            if (!event.lengthComputable) return;
+            setUploadProgress(Math.round((event.loaded / event.total) * 100));
+          };
+
+          request.onload = () => {
+            let result: { message?: string } = {};
+            try {
+              result = JSON.parse(request.responseText || "{}");
+            } catch {
+              result = {};
+            }
+
+            if (request.status >= 200 && request.status < 300) {
+              setUploadProgress(100);
+              resolve();
+              return;
+            }
+
+            reject(new Error(result.message || "文件上传失败"));
+          };
+
+          request.onerror = () => reject(new Error("网络错误，文件上传失败"));
+          request.onabort = () => reject(new Error("文件上传已取消"));
+          request.send(formData);
+        });
 
         toast.success(file.type.startsWith("image/") ? "图片已同步" : "文件已同步");
         return true;
@@ -116,7 +139,10 @@ export function useClipboardRoom(roomCode: string) {
         toast.error(error instanceof Error ? error.message : "文件上传失败");
         return false;
       } finally {
-        setUploading(false);
+        window.setTimeout(() => {
+          setUploading(false);
+          setUploadProgress(0);
+        }, 350);
       }
     },
     [roomCode]
@@ -158,11 +184,12 @@ export function useClipboardRoom(roomCode: string) {
       connected,
       loading,
       uploading,
+      uploadProgress,
       sendText,
       uploadFile,
       deleteItem,
       clearItems
     }),
-    [items, onlineDevices, connected, loading, uploading, sendText, uploadFile, deleteItem, clearItems]
+    [items, onlineDevices, connected, loading, uploading, uploadProgress, sendText, uploadFile, deleteItem, clearItems]
   );
 }
