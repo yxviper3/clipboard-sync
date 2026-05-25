@@ -12,7 +12,14 @@ interface ComposerProps {
   onUpload: (file: File) => Promise<boolean>;
 }
 
-export default function Composer({ uploading, uploadProgress, onlineDevices, connected, onSend, onUpload }: ComposerProps) {
+export default function Composer({
+  uploading,
+  uploadProgress,
+  onlineDevices,
+  connected,
+  onSend,
+  onUpload,
+}: ComposerProps) {
   const [content, setContent] = useState("");
   const [dragging, setDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -32,11 +39,11 @@ export default function Composer({ uploading, uploadProgress, onlineDevices, con
 
   const uploadFiles = async (files: FileList | File[]) => {
     const file = Array.from(files)[0];
-    if (file) {
-      setSelectedFile(file);
-      const ok = await onUpload(file);
-      if (ok) setSelectedFile(null);
-    }
+    if (!file) return;
+
+    setSelectedFile(file);
+    const ok = await onUpload(file);
+    if (ok) setSelectedFile(null);
   };
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +65,9 @@ export default function Composer({ uploading, uploadProgress, onlineDevices, con
     const file = Array.from(event.clipboardData.files)[0];
     if (file) {
       event.preventDefault();
-      await onUpload(file);
+      setSelectedFile(file);
+      const ok = await onUpload(file);
+      if (ok) setSelectedFile(null);
     }
   };
 
@@ -70,6 +79,7 @@ export default function Composer({ uploading, uploadProgress, onlineDevices, con
   };
 
   const sendDisabled = sending || !connected;
+  const uploadStatusVisible = selectedFile && uploading;
 
   return (
     <GlassPanel className="p-5 sm:p-6 lg:p-5 xl:p-6">
@@ -93,6 +103,8 @@ export default function Composer({ uploading, uploadProgress, onlineDevices, con
         className="mt-5 min-h-36 w-full resize-none rounded-3xl border border-white/12 bg-slate-950/35 p-4 text-base leading-7 text-white outline-none transition placeholder:text-slate-400/75 focus:border-cyan-300/70 focus:bg-slate-950/45 focus:shadow-[0_0_32px_rgba(34,211,238,0.14)] focus:ring-4 focus:ring-cyan-300/10 lg:min-h-32"
       />
 
+      <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileChange} />
+
       <div
         onDragOver={(event) => {
           event.preventDefault();
@@ -100,18 +112,12 @@ export default function Composer({ uploading, uploadProgress, onlineDevices, con
         }}
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
-        className={`mt-4 rounded-3xl border border-dashed p-4 transition lg:p-4 xl:p-5 ${
+        className={`mt-4 hidden rounded-3xl border border-dashed p-4 transition lg:block xl:p-5 ${
           dragging
             ? "border-cyan-200 bg-cyan-300/12 shadow-[0_0_34px_rgba(34,211,238,0.16)]"
             : "border-white/15 bg-white/[0.04] hover:border-cyan-200/30 hover:bg-white/[0.06]"
         }`}
       >
-        <input
-          ref={fileInputRef}
-          type="file"
-          className="hidden"
-          onChange={handleFileChange}
-        />
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
@@ -121,49 +127,71 @@ export default function Composer({ uploading, uploadProgress, onlineDevices, con
           <span>{uploading ? "文件上传中..." : "拖拽文件到这里，或点击选择文件"}</span>
         </button>
 
-        {selectedFile && (
-          <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 p-3">
-            <div className="flex items-center justify-between gap-3 text-sm">
-              <div className="min-w-0">
-                <div className="truncate font-semibold text-white">{selectedFile.name}</div>
-                <div className="mt-1 text-xs text-slate-400">
-                  {formatBytes(selectedFile.size)}
-                  {selectedFile.type ? ` · ${selectedFile.type}` : ""}
-                </div>
-              </div>
-              <div className="shrink-0 font-mono text-xs text-cyan-100">{uploadProgress}%</div>
-            </div>
-            <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-cyan-300 to-violet-400 transition-all duration-200"
-                style={{ width: `${uploadProgress}%` }}
-              />
-            </div>
-          </div>
-        )}
+        {uploadStatusVisible && <UploadProgress file={selectedFile} uploadProgress={uploadProgress} className="mt-3" />}
       </div>
 
-      <div className="mt-5 flex flex-col gap-2.5 md:flex-row md:gap-3">
+      {uploadStatusVisible && (
+        <UploadProgress file={selectedFile} uploadProgress={uploadProgress} className="mt-3 lg:hidden" />
+      )}
+
+      <div className="mt-5 grid gap-2.5 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-3">
         <button
           type="button"
           onClick={() => void submit()}
           disabled={sendDisabled}
-          title={!connected ? "连接断开，正在重连" : onlineDevices <= 1 ? "暂无其他在线设备，也会保存在当前房间" : "发送到所有在线设备"}
-          className="inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-300 via-sky-400 to-violet-400 px-5 text-base font-semibold text-slate-950 shadow-glow transition hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0 md:h-12 md:text-sm"
+          title={
+            !connected
+              ? "连接断开，正在重连"
+              : onlineDevices <= 1
+                ? "暂无其他在线设备，也会保存在当前房间"
+                : "发送到所有在线设备"
+          }
+          className="inline-flex h-16 w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-cyan-300 via-sky-400 to-violet-400 px-5 text-lg font-semibold text-slate-950 shadow-glow transition hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0 lg:h-12 lg:text-sm"
         >
-          {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+          {sending ? <Loader2 className="h-5 w-5 animate-spin lg:h-4 lg:w-4" /> : <Send className="h-5 w-5 lg:h-4 lg:w-4" />}
           {sending ? "发送中..." : onlineDevices <= 1 ? "发送内容" : "发送到设备"}
         </button>
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/12 bg-white/[0.05] px-4 text-sm font-semibold text-slate-200 transition hover:-translate-y-0.5 hover:bg-white/[0.1] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 md:h-12 md:rounded-2xl md:px-5 md:text-base"
+          className="mx-auto inline-flex h-9 min-w-32 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.035] px-4 text-xs font-semibold text-slate-400 transition hover:-translate-y-0.5 hover:bg-white/[0.09] hover:text-slate-100 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 lg:mx-0 lg:h-12 lg:min-w-0 lg:rounded-2xl lg:px-5 lg:text-base lg:text-white"
         >
-          <Paperclip className="h-3.5 w-3.5 md:h-4 md:w-4" />
+          <Paperclip className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
           上传文件
         </button>
       </div>
     </GlassPanel>
+  );
+}
+
+function UploadProgress({
+  file,
+  uploadProgress,
+  className = "",
+}: {
+  file: File;
+  uploadProgress: number;
+  className?: string;
+}) {
+  return (
+    <div className={`rounded-2xl border border-white/10 bg-black/20 p-3 ${className}`}>
+      <div className="flex items-center justify-between gap-3 text-sm">
+        <div className="min-w-0">
+          <div className="truncate font-semibold text-white">{file.name}</div>
+          <div className="mt-1 text-xs text-slate-400">
+            {formatBytes(file.size)}
+            {file.type ? ` · ${file.type}` : ""}
+          </div>
+        </div>
+        <div className="shrink-0 font-mono text-xs text-cyan-100">{uploadProgress}%</div>
+      </div>
+      <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-cyan-300 to-violet-400 transition-all duration-200"
+          style={{ width: `${uploadProgress}%` }}
+        />
+      </div>
+    </div>
   );
 }
