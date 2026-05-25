@@ -2,6 +2,7 @@ import toast from "react-hot-toast";
 import { Copy, Download, ExternalLink, FileArchive, Image, Link2, Trash2, Type } from "lucide-react";
 import type { ClipboardItem } from "../types";
 import { resolveAssetUrl } from "../utils/assets";
+import { copyToClipboard } from "../utils/clipboard";
 import { formatBytes, formatDate, formatTime } from "../utils/format";
 
 interface ClipboardItemCardProps {
@@ -11,8 +12,13 @@ interface ClipboardItemCardProps {
 
 export default function ClipboardItemCard({ item, onDelete }: ClipboardItemCardProps) {
   const copyText = async () => {
-    await navigator.clipboard.writeText(item.content);
-    toast.success("复制成功");
+    const ok = await copyToClipboard(item.content);
+    if (ok) {
+      toast.success("复制成功");
+      return;
+    }
+
+    toast.error("复制失败，请长按文本手动复制");
   };
 
   const typeMeta = {
