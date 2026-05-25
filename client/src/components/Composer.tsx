@@ -143,13 +143,13 @@ export default function Composer({ uploading, uploadProgress, onlineDevices, con
         )}
       </div>
 
-      <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+      <div className="mt-5 flex flex-col gap-2.5 md:flex-row md:gap-3">
         <button
           type="button"
           onClick={() => void submit()}
           disabled={sendDisabled}
           title={!connected ? "连接断开，正在重连" : onlineDevices <= 1 ? "暂无其他在线设备，也会保存在当前房间" : "发送到所有在线设备"}
-          className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-300 via-sky-400 to-violet-400 px-5 font-semibold text-slate-950 shadow-glow transition hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
+          className="inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-300 via-sky-400 to-violet-400 px-5 text-base font-semibold text-slate-950 shadow-glow transition hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0 md:h-12 md:text-sm"
         >
           {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           {sending ? "发送中..." : onlineDevices <= 1 ? "发送内容" : "发送到设备"}
@@ -158,9 +158,9 @@ export default function Composer({ uploading, uploadProgress, onlineDevices, con
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-white/12 bg-white/[0.055] px-5 font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/[0.1] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/12 bg-white/[0.05] px-4 text-sm font-semibold text-slate-200 transition hover:-translate-y-0.5 hover:bg-white/[0.1] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 md:h-12 md:rounded-2xl md:px-5 md:text-base"
         >
-          <Paperclip className="h-4 w-4" />
+          <Paperclip className="h-3.5 w-3.5 md:h-4 md:w-4" />
           上传文件
         </button>
       </div>
