@@ -11,6 +11,8 @@ interface ClipboardItemCardProps {
 }
 
 export default function ClipboardItemCard({ item, onDelete }: ClipboardItemCardProps) {
+  const canCopy = item.type === "text" || item.type === "link";
+
   const copyText = async () => {
     const ok = await copyToClipboard(item.content);
     if (ok) {
@@ -62,15 +64,28 @@ export default function ClipboardItemCard({ item, onDelete }: ClipboardItemCardP
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={() => onDelete(item.id)}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-2xl text-slate-400 transition hover:bg-rose-400/12 hover:text-rose-200"
-          title="删除"
-          aria-label="删除"
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
+        <div className="flex shrink-0 items-center gap-1.5">
+          {canCopy && (
+            <button
+              type="button"
+              onClick={() => void copyText()}
+              className="hidden h-9 w-9 place-items-center rounded-2xl text-slate-400 transition hover:bg-cyan-300/12 hover:text-cyan-100 md:grid"
+              title="复制"
+              aria-label="复制"
+            >
+              <Copy className="h-4 w-4" />
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => onDelete(item.id)}
+            className="grid h-9 w-9 place-items-center rounded-2xl text-slate-400 transition hover:bg-rose-400/12 hover:text-rose-200"
+            title="删除"
+            aria-label="删除"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       {item.type === "image" ? (
@@ -130,7 +145,7 @@ export default function ClipboardItemCard({ item, onDelete }: ClipboardItemCardP
             <button
               type="button"
               onClick={() => void copyText()}
-              className="inline-flex items-center gap-2 rounded-2xl bg-white/[0.08] px-4 py-2 text-sm font-semibold text-white transition hover:bg-cyan-300/15"
+              className="inline-flex items-center gap-2 rounded-2xl bg-white/[0.08] px-4 py-2 text-sm font-semibold text-white transition hover:bg-cyan-300/15 md:hidden"
             >
               <Copy className="h-4 w-4" />
               复制
