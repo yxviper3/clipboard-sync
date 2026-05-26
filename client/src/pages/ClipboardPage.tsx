@@ -8,6 +8,7 @@ import EmptyState from "../components/EmptyState";
 import GlassPanel from "../components/GlassPanel";
 import HeaderStatus from "../components/HeaderStatus";
 import MobileActionBar from "../components/MobileActionBar";
+import NetworkAccessCard from "../components/NetworkAccessCard";
 import PwaInstallCard from "../components/PwaInstallCard";
 import { useClipboardRoom } from "../hooks/useClipboardRoom";
 
@@ -85,6 +86,9 @@ export default function ClipboardPage({ roomCode, onDisconnect }: ClipboardPageP
               onSend={sendText}
               onUpload={uploadFile}
             />
+            <div className="hidden lg:block">
+              <NetworkAccessCard roomCode={roomCode} />
+            </div>
             <GlassPanel className="hidden p-4 lg:block">
               <div className="flex items-center gap-3">
                 <div className="grid h-9 w-9 place-items-center rounded-xl bg-violet-300/12 text-violet-100">
