@@ -9,6 +9,10 @@ const SERVER_URL = `http://127.0.0.1:${PORT}`;
 let mainWindow;
 let serverProcess;
 
+// Required for the portable Windows build on some systems where Chromium's sandbox
+// exits before the local server can start. This app is a local LAN utility.
+app.commandLine.appendSwitch("no-sandbox");
+
 function getAppRoot() {
   return path.resolve(__dirname, "..");
 }
